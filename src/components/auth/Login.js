@@ -13,6 +13,7 @@ export const LoginComponents = () => {
     e.preventDefault();
     try {
       await login(username, password);
+
       navigate("/dashboard");
     } catch (err) {
       setError("Failed to log in");

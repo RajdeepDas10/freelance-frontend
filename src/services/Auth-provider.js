@@ -1,10 +1,11 @@
 import axios from "axios";
 import { createContext, useContext, useState } from "react";
+import { BASE_URL } from "../config";
 
 // Auth context
 const AuthContext = createContext();
 
-const url = "http://localhost:5000/api";
+const url = BASE_URL;
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -19,7 +20,8 @@ export const AuthProvider = ({ children }) => {
     });
 
     localStorage.setItem("token", response.data.token);
-    console.log("response", response);
+    localStorage.setItem("freelanceuser", JSON.stringify(response.data.user));
+    localStorage.setItem("userId", response.data.user._id);
     setUser(response.data.user);
     return response;
   };

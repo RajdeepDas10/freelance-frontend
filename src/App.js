@@ -9,6 +9,12 @@ import HomePage from "./pages/home/Home.jsx";
 // import other components and pages here
 import "./index.css";
 import { AuthProvider } from "./services/Auth-provider.js";
+import JobPost from "./components/job/JobPost.js";
+import ClientDashboard from "./components/clientProfile/dashboard.jsx";
+import FreelanceProfile from "./components/userProfile/FreelanceProfile.jsx";
+import PortfolioManagement from "./components/userProfile/Portfolio.jsx";
+import JobDetails from "./pages/jobDetails/jobDetails.jsx";
+import BidList from "./pages/bidManagement/BidList.jsx";
 
 const App = () => {
   return (
@@ -20,6 +26,12 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<HomePage />} />
+          <Route path="/job/post" element={<JobPost />} />
+          <Route path="/profile" element={<FreelanceProfile />} />
+          <Route path="/portfolio" element={<PortfolioManagement />} />
+          <Route path="/client-dashboard" element={<ClientDashboard />} />
+          <Route path="/job-details/:id" element={<JobDetails />} />
+          <Route path="/bid-list/:id" element={<BidList />} />
           {/* Add more routes here */}
           {/* <Route
             exact
