@@ -21,7 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 const App = () => {
   return (
     <AuthProvider>
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={1000} />
       <Router>
         <Navbar />
         <Routes>
