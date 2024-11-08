@@ -69,7 +69,7 @@ const JobDetails = () => {
         Amount Type: {job?.amountType}
       </p>
       <p className="text-lg mb-2 text-gray-700">
-        Duration: {job?.duration} 2-6 months
+        Duration: {job?.duration}  months
       </p>
       <p className="text-lg mb-2 text-gray-700">
         Description: {job?.description}
