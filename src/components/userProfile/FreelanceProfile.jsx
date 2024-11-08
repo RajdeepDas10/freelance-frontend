@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../../config";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const UserProfileManagement = () => {
-  const [profile, setProfile] = useState({
-    id: "",
-    name: "",
-    email: "",
-    bio: "",
-    skills: "",
-  });
+  const [profile, setProfile] = useState({});
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      [name]: value,
+    }));
+  };
+
+  const handleSkillsChange = (e) => {
+    setProfile((prevProfile) => ({
+      ...prevProfile,
+      skills: e.target.value.split(","),
+    }));
+  };
 
   useEffect(() => {
     // Fetch user profile data
@@ -15,49 +28,66 @@ const UserProfileManagement = () => {
   }, []);
 
   const fetchUserProfile = async () => {
-    // Simulating an API call
-    setTimeout(() => {
-      setProfile({
-        id: "1",
-        name: "John Doe",
-        email: "john@example.com",
-        bio: "Experienced freelance developer",
-        skills: "React, Node.js, Python",
-      });
-    }, 1000);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setProfile((prevProfile) => ({
-      ...prevProfile,
-      [name]: value,
-    }));
+    const userId = localStorage.getItem("userId");
+    const response = await fetch(
+      `${BASE_URL}/profiles/freelancer-profile/${userId}`
+    );
+    const data = await response.json();
+    setProfile({
+      bio: data?.bio,
+      email: data?.email,
+      password: data?.password,
+      role: data?.role,
+      skills: data?.skills,
+      username: data?.username,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Profile updated:", profile);
-    // Simulating an API call
-    setTimeout(() => {
-      alert("Profile updated successfully!");
-    }, 1000);
+    console.log("profile", profile);
+    const userId = localStorage.getItem("userId");
+    const response = await axios.put(
+      `${BASE_URL}/profiles/freelancer-profile/${userId}`,
+      profile
+    );
+    console.log("response", response);
+    if (response.status === 200) {
+      toast.success("Profile updated successfully!");
+    }
   };
 
-  const handleDelete = async () => {
-    console.log("Profile deleted");
-    // Simulating an API call
-    setTimeout(() => {
-      alert("Profile deleted successfully!");
-      setProfile({
-        id: "",
-        name: "",
-        email: "",
-        bio: "",
-        skills: "",
-      });
-    }, 1000);
-  };
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setProfile((prevProfile) => ({
+  //     ...prevProfile,
+  //     [name]: value,
+  //   }));
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Profile updated:", profile);
+  //   // Simulating an API call
+  //   setTimeout(() => {
+  //     alert("Profile updated successfully!");
+  //   }, 1000);
+  // };
+
+  // const handleDelete = async () => {
+  //   console.log("Profile deleted");
+  //   // Simulating an API call
+  //   setTimeout(() => {
+  //     alert("Profile deleted successfully!");
+  //     setProfile({
+  //       id: "",
+  //       name: "",
+  //       email: "",
+  //       bio: "",
+  //       skills: "",
+  //     });
+  //   }, 1000);
+  // };
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -74,10 +104,11 @@ const UserProfileManagement = () => {
             type="text"
             id="name"
             name="name"
-            value={profile.name}
+            value={profile.username}
             onChange={handleInputChange}
+            disabled
             required
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 cursor-not-allowed block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
         <div>
@@ -93,8 +124,9 @@ const UserProfileManagement = () => {
             name="email"
             value={profile.email}
             onChange={handleInputChange}
+            disabled
             required
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-1 cursor-not-allowed block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>
         <div>
@@ -107,7 +139,7 @@ const UserProfileManagement = () => {
           <textarea
             id="bio"
             name="bio"
-            value={profile.bio}
+            value={profile?.bio}
             onChange={handleInputChange}
             rows={3}
             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
@@ -124,8 +156,8 @@ const UserProfileManagement = () => {
             type="text"
             id="skills"
             name="skills"
-            value={profile.skills}
-            onChange={handleInputChange}
+            value={profile?.skills}
+            onChange={handleSkillsChange}
             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
         </div>

@@ -15,10 +15,13 @@ import FreelanceProfile from "./components/userProfile/FreelanceProfile.jsx";
 import PortfolioManagement from "./components/userProfile/Portfolio.jsx";
 import JobDetails from "./pages/jobDetails/jobDetails.jsx";
 import BidList from "./pages/bidManagement/BidList.jsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
     <AuthProvider>
+      <ToastContainer />
       <Router>
         <Navbar />
         <Routes>

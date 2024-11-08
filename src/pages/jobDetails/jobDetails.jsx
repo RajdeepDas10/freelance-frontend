@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../services/Auth-provider";
 import { BASE_URL } from "../../config";
+import { toast } from "react-toastify";
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -39,8 +40,11 @@ const JobDetails = () => {
       const response = await axios.get(
         `${BASE_URL}/jobs/bid/${id}/${bid}/${userData?._id}`
       );
+      console.log("response bid", response.data);
       if (response.data.success) {
         setSuccess(response.data.message);
+        setBid("");
+        toast.success(response.data.message);
         setError("");
       } else {
         setError(response.data.message);
@@ -70,7 +74,7 @@ const JobDetails = () => {
       <p className="text-lg mb-2 text-gray-700">
         Description: {job?.description}
       </p>
-      {userData?.role !== "client" && (
+      {userData && userData?.role !== "client" && (
         <form onSubmit={handleBid} className="mt-4">
           <input
             type="number"
@@ -90,12 +94,14 @@ const JobDetails = () => {
               {success}
             </div>
           )}
-          <button
-            type="submit"
-            className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"
-          >
-            Place Bid
-          </button>
+          {userData && userData?.role !== "client" && (
+            <button
+              type="submit"
+              className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"
+            >
+              Place Bid
+            </button>
+          )}
         </form>
       )}
     </div>

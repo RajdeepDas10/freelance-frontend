@@ -25,7 +25,7 @@ const JobCard = ({
       <span className="flex items-center">🕒 {duration} months</span>
     </div>
     <p className="text-gray-700">{description}</p>
-    {userdata?.role !== "client" && (
+    {userdata?.role !== "client" && userdata && (
       <button
         className="mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors duration-300"
         onClick={() => {

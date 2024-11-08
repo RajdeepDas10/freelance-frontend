@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../services/Auth-provider";
+import { toast } from "react-toastify";
 
 const Signup = () => {
   const { register } = useAuth();

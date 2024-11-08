@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../config";
 
 export default function PortfolioDashboard() {
   const [projects, setProjects] = useState([
@@ -32,7 +34,7 @@ export default function PortfolioDashboard() {
     startDate: "",
     endDate: "",
     paymentType: "fixed",
-    duration: "",
+    duration: "2-4",
   });
   const [projectRating, setProjectRating] = useState({});
 
@@ -52,15 +54,28 @@ export default function PortfolioDashboard() {
     const userId = localStorage.getItem("userId");
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/profiles/add/client-project/${userId}`,
+        `${BASE_URL}/profiles/add/client-project/${userId}`,
         newProject
       );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+      console.log("response", response);
+      if (response.status === 200) {
+        toast.success("Project added successfully!");
+        fetchProjects();
+        setShowAddForm(false);
+        setNewProject({
+          title: "",
+          description: "",
+          status: "open",
+          budget: 1,
+          skills: "",
+          startDate: "",
+          endDate: "",
+          paymentType: "fixed",
+          duration: "2-4",
+        });
       }
-      fetchProjects();
-      console.log("Data uploaded:", newProject);
     } catch (error) {
+      toast.error("There was a problem with the fetch operation!");
       console.error("There was a problem with the fetch operation:", error);
     }
   };

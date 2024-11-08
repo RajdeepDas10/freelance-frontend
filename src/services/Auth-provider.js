@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useContext, useState } from "react";
 import { BASE_URL } from "../config";
+import { toast } from "react-toastify";
 
 // Auth context
 const AuthContext = createContext();
@@ -36,10 +37,12 @@ export const AuthProvider = ({ children }) => {
         username: username,
       })
       .then((res) => {
+        toast.success(res.data.message);
         return res.data.message;
       })
       .catch((err) => {
         console.log("errr", err);
+        toast.error(err.response.data.message);
         return err.response.data.message;
       });
     console.log("response.response.status", response);

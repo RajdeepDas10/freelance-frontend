@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { BASE_URL } from "../../config";
 
 // Dummy data for initial projects
 const initialProjects = [
@@ -34,28 +35,18 @@ export default function FreelanceProfile() {
     earnings: 0,
   });
 
-  const addProject = (e) => {
-    e.preventDefault();
-    setProjects([...projects, { ...newProject, id: projects.length + 1 }]);
-    setNewProject({ name: "", client: "", status: "Not Started", earnings: 0 });
-  };
-
-  const totalEarnings = projects.reduce(
-    (sum, project) => sum + project.earnings,
-    0
-  );
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userId = localStorage.getItem("userId");
         const response = await fetch(
-          `http://localhost:5000/api/projects/${userId}`
+          `${BASE_URL}/profiles/freelancer-work/${userId}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
+        console.log("data", data);
         setProjects(data);
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -76,16 +67,20 @@ export default function FreelanceProfile() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-2">Total Projects</h2>
-          <p className="text-3xl font-bold text-blue-600">{projects.length}</p>
+          <p className="text-3xl font-bold text-blue-600">
+            {projects?.projectCount || 0}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-2">Total Earnings</h2>
-          <p className="text-3xl font-bold text-green-600">${totalEarnings}</p>
+          <p className="text-3xl font-bold text-green-600">
+            ${projects?.totalAmount || 0}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-2">Ongoing Projects</h2>
           <p className="text-3xl font-bold text-yellow-600">
-            {projects.filter((p) => p.status === "In Progress").length}
+            {projects?.ongoingProjectCount || 0}
           </p>
         </div>
       </div>
@@ -189,7 +184,7 @@ export default function FreelanceProfile() {
                     Project Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Client
+                    Skills Required
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -200,45 +195,30 @@ export default function FreelanceProfile() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {[
-                  {
-                    id: 1,
-                    name: "Project 1",
-                    client: "Client 1",
-                    status: "Pending",
-                    appliedDate: "2022-01-01",
-                  },
-                  {
-                    id: 2,
-                    name: "Project 2",
-                    client: "Client 2",
-                    status: "Approved",
-                    appliedDate: "2022-01-02",
-                  },
-                ].map((project) => (
-                  <tr key={project.id}>
+                {projects?.appliedProjects?.map((project, id) => (
+                  <tr key={id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {project.name}
+                      {project?.projectId?.title}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {project.client}
+                      {project?.projectId?.skills}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                         ${
-                          project.status === "Pending"
+                          project?.status === "Pending"
                             ? "bg-yellow-100 text-yellow-800"
-                            : project.status === "Rejected"
+                            : project?.status === "Rejected"
                             ? "bg-red-100 text-red-800"
                             : "bg-green-100 text-green-800"
                         }`}
                       >
-                        {project.status}
+                        {project?.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {new Date(project.appliedDate).toLocaleDateString()}
+                      {new Date(project?.createdAt).toLocaleDateString()}
                     </td>
                   </tr>
                 ))}
@@ -257,7 +237,7 @@ export default function FreelanceProfile() {
                     Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Client
+                    Client Name
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -268,30 +248,30 @@ export default function FreelanceProfile() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {projects.map((project) => (
-                  <tr key={project.id}>
+                {projects?.projects?.map((project, id) => (
+                  <tr key={id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {project.name}
+                      {project?.title}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {project.client}
+                      {project?.clientId?.username}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                         ${
-                          project.status === "Completed"
+                          project?.status === "Completed"
                             ? "bg-green-100 text-green-800"
-                            : project.status === "In Progress"
+                            : project?.status === "In Progress"
                             ? "bg-yellow-100 text-yellow-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {project.status}
+                        {project?.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      ${project.earnings}
+                      ${project?.budget}
                     </td>
                   </tr>
                 ))}
