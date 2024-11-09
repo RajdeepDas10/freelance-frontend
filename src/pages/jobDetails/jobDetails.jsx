@@ -69,7 +69,7 @@ const JobDetails = () => {
         Amount Type: {job?.amountType}
       </p>
       <p className="text-lg mb-2 text-gray-700">
-        Duration: {job?.duration}  months
+        Duration: {job?.duration} months
       </p>
       <p className="text-lg mb-2 text-gray-700">
         Description: {job?.description}
@@ -78,9 +78,17 @@ const JobDetails = () => {
         <form onSubmit={handleBid} className="mt-4">
           <input
             type="number"
+            min="1"
+            pattern="[1-9]*"
             placeholder="Enter your bid"
             value={bid}
-            onChange={(e) => setBid(e.target.value)}
+            onChange={(e) =>
+              setBid(
+                e.target.value < 1 || isNaN(e.target.value)
+                  ? ""
+                  : e.target.value
+              )
+            }
             required
             className="w-full p-2 mb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />

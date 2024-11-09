@@ -101,6 +101,23 @@ export default function PortfolioDashboard() {
 
   console.log("projectData", projectData);
 
+  const handleSubmitReview = async (projectId) => {
+    console.log("projectId", projectId);
+    const userId = localStorage.getItem("userId");
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/jobs/add/${userId}/${projectId}`,
+        { rating: projectRating[projectId], review: projectRating[projectId] }
+      );
+      if (response.status === 200) {
+        toast.success("Review submitted successfully!");
+        fetchProjects();
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8">
       <div className="max-w-6xl mx-auto">
@@ -353,8 +370,18 @@ export default function PortfolioDashboard() {
                         <option value="4">4</option>
                         <option value="5">5</option>
                       </select>
+                      <textarea
+                        value={project.review}
+                        onChange={(e) =>
+                          setProjectRating({
+                            ...projectRating,
+                            [project.id]: e.target.value,
+                          })
+                        }
+                      ></textarea>
                       <button
-                        type="submit"
+                        // type="submit"
+                        onClick={() => handleSubmitReview(project.id)}
                         className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
                       >
                         Submit Review
