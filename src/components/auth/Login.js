@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../services/Auth-provider";
 import { toast } from "react-toastify";
@@ -7,8 +7,7 @@ export const LoginComponents = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { login, logout } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,6 +17,14 @@ export const LoginComponents = () => {
       setError("Failed to log in");
     }
   };
+
+  useEffect(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("freelanceuser");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    logout();
+  }, []);
 
   return (
     <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">

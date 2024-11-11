@@ -90,7 +90,7 @@ const UserProfileManagement = () => {
       localStorage.removeItem("role");
       localStorage.removeItem("token");
       logout();
-      navigate("/");
+      navigate("/login");
     } else {
       toast.error("Failed to delete profile!");
     }
