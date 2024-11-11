@@ -39,6 +39,8 @@ export default function PortfolioDashboard() {
   const [projectRating, setProjectRating] = useState({});
 
   const [projectData, setProjectData] = useState([]);
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
 
   const addProject = (e) => {
     e.preventDefault();
@@ -103,11 +105,22 @@ export default function PortfolioDashboard() {
 
   const handleSubmitReview = async (projectId) => {
     console.log("projectId", projectId);
+    console.log("projectRating", projectRating[projectId]);
+    console.log("projectRating data ", projectRating);
+    if (review.length < 1) {
+      alert("Review is required");
+      return;
+    }
     const userId = localStorage.getItem("userId");
     try {
       const response = await axios.post(
-        `${BASE_URL}/jobs/add/${userId}/${projectId}`,
-        { rating: projectRating[projectId], review: projectRating[projectId] }
+        `${BASE_URL}/jobs/rate/${userId}/${projectId}`,
+        {
+          data: {
+            rating: rating,
+            review: review,
+          },
+        }
       );
       if (response.status === 200) {
         toast.success("Review submitted successfully!");
@@ -337,7 +350,7 @@ export default function PortfolioDashboard() {
               >
                 {project.status}
               </span>
-              {project.status === "completed" && (
+              {project.status === "completed" && !project.isRated && (
                 <div className="mt-4">
                   {project.rating ? (
                     <div>
@@ -355,13 +368,8 @@ export default function PortfolioDashboard() {
                       </label>
                       <select
                         id="rating"
-                        value={project.rating}
-                        onChange={(e) =>
-                          setProjectRating({
-                            ...projectRating,
-                            [project.id]: e.target.value,
-                          })
-                        }
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
                         <option value="1">1</option>
@@ -371,23 +379,32 @@ export default function PortfolioDashboard() {
                         <option value="5">5</option>
                       </select>
                       <textarea
-                        value={project.review}
-                        onChange={(e) =>
-                          setProjectRating({
-                            ...projectRating,
-                            [project.id]: e.target.value,
-                          })
-                        }
+                        value={review}
+                        onChange={(e) => setReview(e.target.value)}
+                        required
+                        placeholder="Write your review here..."
+                        className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       ></textarea>
                       <button
                         // type="submit"
-                        onClick={() => handleSubmitReview(project.id)}
+
+                        onClick={() => handleSubmitReview(project?._id)}
                         className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
                       >
                         Submit Review
                       </button>
                     </div>
                   )}
+                </div>
+              )}
+              {project.status === "completed" && project.isRated && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    Rating: {project?.rating?.rating}/5
+                  </p>
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    Review: {project?.rating?.review}
+                  </p>
                 </div>
               )}
             </div>

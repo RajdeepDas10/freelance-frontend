@@ -15,16 +15,29 @@ export const AuthProvider = ({ children }) => {
   // Simulated API calls
   const login = async (email, password) => {
     //  make an API call here
-    const response = await axios.post(`${url}/users/login`, {
-      username: email,
-      password: password,
-    });
+    try {
+      const response = await axios.post(`${url}/users/login`, {
+        username: email,
+        password: password,
+      });
 
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("freelanceuser", JSON.stringify(response.data.user));
-    localStorage.setItem("userId", response.data.user._id);
-    setUser(response.data.user);
-    return response;
+      console.log("response", response);
+      if (response.status === 400) {
+        toast.error(response.data.message);
+        return response.data.message;
+      }
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("freelanceuser", JSON.stringify(response.data.user));
+      localStorage.setItem("userId", response.data.user._id);
+      setUser(response.data.user);
+      toast.success("Login successful");
+      window.location.href = "/dashboard";
+      return response;
+    } catch (error) {
+      toast.error(error.response.data.message);
+      return error.response.data.message;
+    }
   };
 
   const register = async (username, email, password, role) => {

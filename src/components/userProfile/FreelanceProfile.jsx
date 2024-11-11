@@ -2,9 +2,13 @@ import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../../config";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../services/Auth-provider";
 
 const UserProfileManagement = () => {
   const [profile, setProfile] = useState({});
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,20 +78,23 @@ const UserProfileManagement = () => {
   //   }, 1000);
   // };
 
-  // const handleDelete = async () => {
-  //   console.log("Profile deleted");
-  //   // Simulating an API call
-  //   setTimeout(() => {
-  //     alert("Profile deleted successfully!");
-  //     setProfile({
-  //       id: "",
-  //       name: "",
-  //       email: "",
-  //       bio: "",
-  //       skills: "",
-  //     });
-  //   }, 1000);
-  // };
+  const handleDelete = async () => {
+    const userId = localStorage.getItem("userId");
+    const response = await axios.delete(
+      `${BASE_URL}/users/delete/freelancer-profile/${userId}`
+    );
+    console.log("response", response);
+    if (response.status === 200) {
+      toast.success("Profile deleted successfully!");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("role");
+      localStorage.removeItem("token");
+      logout();
+      navigate("/");
+    } else {
+      toast.error("Failed to delete profile!");
+    }
+  };
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
@@ -168,13 +175,19 @@ const UserProfileManagement = () => {
           >
             Update Profile
           </button>
-          {/* <button
+          <button
             type="button"
-            onClick={handleDelete}
+            onClick={() => {
+              if (
+                window.confirm("Are you sure you want to delete your profile?")
+              ) {
+                handleDelete();
+              }
+            }}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           >
             Delete Profile
-          </button> */}
+          </button>
         </div>
       </form>
     </div>
