@@ -86,7 +86,7 @@ export default function FreelanceProfile() {
         <div className="bg-white p-6 rounded-lg shadow">
           <h2 className="text-xl font-semibold mb-2">Rejected Projects</h2>
           <p className="text-3xl font-bold text-yellow-600">
-            {projects?.cancelledProjectCount || 0}
+            {projects?.rejectedProject || 0}
           </p>
         </div>
       </div>

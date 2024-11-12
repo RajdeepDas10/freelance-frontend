@@ -158,12 +158,12 @@ export default function PortfolioDashboard() {
               {projectData?.filter((p) => p.status === "completed").length}
             </p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow">
+          {/* <div className="bg-white p-4 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-2">Cancelled</h2>
             <p className="text-3xl font-bold">
               {projectData?.filter((p) => p.status === "cancelled").length}
             </p>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex justify-between items-center mb-4">
